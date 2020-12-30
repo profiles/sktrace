@@ -4,3 +4,4 @@
 *$py.class
 build/
 node_modules/
+.idea

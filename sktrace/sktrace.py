@@ -1,4 +1,3 @@
-
 """
 A instruction trace script based on Frida-Stalker.
 """
@@ -12,6 +11,7 @@ import frida
 from sktracemgr import TraceMgr
 
 __version__ = "1.0.0"
+
 
 def _finish(args, device, pid, scripts):
     print('Stopping application (name={}, pid={})...'.format(
@@ -40,9 +40,9 @@ def _parse_args():
     parser.add_argument("-m", "--inject-method", choices=["spawn", "attach"],
                         default="spawn",
                         help="Specify how frida should inject into the process.")
-    parser.add_argument("-l", "--libname", required=True, 
+    parser.add_argument("-l", "--libname", required=True,
                         help="Specify a native library like libnative-lib.so")
-    parser.add_argument("-i", "--interceptor", required=True, 
+    parser.add_argument("-i", "--interceptor", required=True,
                         help="Specity a function (symbol or a hex offset address) to trace.")
     parser.add_argument("-p", "--prepend", type=argparse.FileType("r"),
                         help="Prepend a Frida script to run before sktrace does.")
@@ -58,13 +58,12 @@ def _parse_args():
     return args
 
 
-
 def main():
     script_file = os.path.join(os.path.dirname(__file__), "sktrace.js")
     try:
         script = open(script_file, encoding='utf-8').read()
-    except:
-        raise Exception("Read script error.")
+    except Exception as e:
+        raise Exception("Read script error.", e)
 
     trace_mgr = TraceMgr()
 
@@ -81,7 +80,7 @@ def main():
         config["payload"]["offset"] = int(args.interceptor, 16)
     else:
         config["payload"]["symbol"] = args.interceptor
-    
+
     device = frida.get_usb_device(1)
     if args.inject_method == "spawn":
         raise Exception("working for this ...")
@@ -127,11 +126,6 @@ def main():
 
     # _finish(args, device, pid, scripts)
 
+
 if __name__ == '__main__':
     main()
-
-
-
-
-
-

@@ -1,5 +1,3 @@
-
-
 const arm64CM = new CModule(`
 #include <gum/gumstalker.h>
 #include <stdio.h>
