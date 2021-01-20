@@ -147,8 +147,6 @@ function traceAddr(addr) {
     let moduleMap = new ModuleMap();    
     let targetModule = moduleMap.find(addr);
     console.log(JSON.stringify(targetModule))
-    let exports = targetModule.enumerateExports();
-    let symbols = targetModule.enumerateSymbols();
     // send({
     //     type: "module", 
     //     targetModule
@@ -221,7 +219,14 @@ function watcherLib(libname, callback) {
         const libname = payload.libname;
         console.log(`libname:${libname}`)
         if(payload.spawn) {
-            console.error(`todo: spawn inject not implemented`)
+            const targetModule = Process.getModuleByName(libname);
+            let targetAddress = null;
+            if("symbol" in payload) {
+                targetAddress = targetModule.findExportByName(payload.symbol);
+            } else if("offset" in payload) {
+                targetAddress = targetModule.base.add(ptr(payload.offset));
+            }
+            traceAddr(targetAddress)
         } else {
             // const modules = Process.enumerateModules();
             const targetModule = Process.getModuleByName(libname);
